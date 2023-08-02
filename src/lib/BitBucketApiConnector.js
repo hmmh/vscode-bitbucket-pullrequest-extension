@@ -1,16 +1,17 @@
 import fetch, { Headers } from 'node-fetch';
 
 export default class BitBucketApiConnector {
-  constructor(project, repository, username, password) {
+  constructor(project, repository, credentials) {
     this.baseUrl = 'https://bitbucket.hmmh.de/rest/api/latest';
     this.project = project;
     this.repository = repository;
+    this.credentials = credentials;
 
-    this.getBearer(username, password);
+    this.getBearer();
   }
 
   // Get bearer token from bitbucket
-  getBearer(username, password) {
+  getBearer() {
     // const url = `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/branches`;
 
     // const headers = new Headers();
@@ -19,9 +20,10 @@ export default class BitBucketApiConnector {
     // fetch(url, { headers })
     //   .then(res => res.json())
     //   .then(json => {
-    //     this.token = json.values[0].latestCommit;
+    //     this.bearerToken = json.values[0].latestCommit;
     //   });
-    this.token = 'NDM0NzQ5NTE2ODIwOsVSgk901UBGWLlxovaRCdZXrRfv';
+    // NDM0NzQ5NTE2ODIwOsVSgk901UBGWLlxovaRCdZXrRfv
+    if (this.credentials.token) this.bearerToken = this.credentials.token;
   }
 
   async getPullRequests() {
@@ -29,7 +31,7 @@ export default class BitBucketApiConnector {
       `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/pull-requests`, 
       {
         headers: {
-          'Authorization': `Bearer ${this.token}`
+          'Authorization': `Bearer ${this.bearerToken}`
         }
       }
     )
@@ -44,18 +46,43 @@ export default class BitBucketApiConnector {
     return pullRequests.find(pr => pr.fromRef.displayId === branch);
   }
 
-  async getPullRequestTasks(pullRequestId) {
-    const tasks = await fetch(
-      `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/pull-requests/${pullRequestId}/blocker-comments`, 
+  async getPullRequestComments(pullRequestId) {
+    const { values: activities } = await fetch(
+      `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/pull-requests/${pullRequestId}/activities?limit=1000`, 
       {
         headers: {
-          'Authorization': `Bearer ${this.token}`
+          'Authorization': `Bearer ${this.bearerToken}`
         }
       }
     )
       .then(res => res.json())
-      .catch(err => console.log(err));    
+      .catch(err => console.log(err));
 
-    return tasks;
+    const generalComments = [];
+    const comments = [];
+    const tasks = [];
+    activities.forEach(activity => {
+      if (activity.commentAnchor) {
+        if (activity.comment.severity === 'BLOCKER') {
+          tasks.push({
+            ...activity.comment,
+            anchor: activity.commentAnchor
+          });
+          return;
+        }
+        comments.push({
+          ...activity.comment,
+          anchor: activity.commentAnchor
+        });
+      } else if (activity.comment) {
+        generalComments.push(activity.comment);
+      }
+    });
+
+    return {
+      generalComments,
+      comments,
+      tasks
+    };
   }
 }

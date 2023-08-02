@@ -18,12 +18,12 @@
         "title": "Bitbucket PullRequest Tasks: Authenticate"
       },
       {
-        "command": "bitbucket-pullrequest-tasks.setupProject",
-        "title": "Bitbucket PullRequest Tasks: Setup Project"
+        "command": "bitbucket-pullrequest-tasks.authWithToken",
+        "title": "Bitbucket PullRequest Tasks: Authenticate with token"
       },
       {
-        "command": "bitbucket-pullrequest-tasks.getTasks",
-        "title": "Bitbucket PullRequest Tasks: Get tasks"
+        "command": "bitbucket-pullrequest-tasks.setupProject",
+        "title": "Bitbucket PullRequest Tasks: Setup Project"
       }
     ],
     "viewsContainers": {
@@ -40,6 +40,14 @@
         {
           "id": "bitbucket-pullrequest-tasks-list",
           "name": "Tasks"
+        },
+        {
+          "id": "bitbucket-pullrequest-comments-list",
+          "name": "Comments"
+        },
+        {
+          "id": "bitbucket-pullrequest-general-comments-list",
+          "name": "General Comments"
         }
       ]
     }

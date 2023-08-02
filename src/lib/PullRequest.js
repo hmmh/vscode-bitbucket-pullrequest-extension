@@ -37,21 +37,27 @@ export default class PullRequest {
   async connectToBitBucket() {
     const username = await this.context.secrets.get('bitbucket-pullrequest-tasks.username');
     const password = await this.context.secrets.get('bitbucket-pullrequest-tasks.password');
+    const token = await this.context.secrets.get('bitbucket-pullrequest-tasks.token');
     const project = this.context.workspaceState.get('bitbucket-pullrequest-tasks.project');
     const repo = this.context.workspaceState.get('bitbucket-pullrequest-tasks.repository');
     
     if (!project || !repo) return false;
 
-    this.connector = new BitBucketApiConnector(project, repo, username, password);
+    this.connector = new BitBucketApiConnector(project, repo, {
+      username,
+      password,
+      token
+    });
   }
   
   async getPullRequest() {
     return await this.connector.getPullRequestByBranch(this.branchName);
   }
 
-  async getTasks() {
-    const {values} = await this.connector.getPullRequestTasks(this.pullRequest.id);
-
-    return values;
+  async loadComments() {
+    const {generalComments, comments, tasks} = await this.connector.getPullRequestComments(this.pullRequest.id);
+    this.generalComments = generalComments;
+    this.comments = comments;
+    this.tasks = tasks;
   }
 }

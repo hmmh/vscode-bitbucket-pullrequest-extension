@@ -1,6 +1,6 @@
 import vscode from 'vscode';
 
-export default async function authenticationCommand(context) {
+export default async function authenticate(context) {
   const username = await vscode.window.showInputBox({
     prompt: 'Please enter your username',
     placeHolder: 'Name'
