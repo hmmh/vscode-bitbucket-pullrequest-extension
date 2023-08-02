@@ -1,0 +1,73 @@
+{
+  "name": "bitbucket-pullrequest-tasks",
+  "displayName": "Bitbucket PullRequest Tasks",
+  "description": "Shows the open tasks inside of the editor and opens the files in which they are made.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/main.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "bitbucket-pullrequest-tasks.auth",
+        "title": "Bitbucket PullRequest Tasks: Authenticate"
+      },
+      {
+        "command": "bitbucket-pullrequest-tasks.setupProject",
+        "title": "Bitbucket PullRequest Tasks: Setup Project"
+      },
+      {
+        "command": "bitbucket-pullrequest-tasks.getTasks",
+        "title": "Bitbucket PullRequest Tasks: Get tasks"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "bitbucket-pullrequest-tasks-explorer",
+          "title": "Bitbucket PullRequest",
+          "icon": "resources/tasks-explorer.svg"
+        }
+      ]
+    },
+    "views": {
+      "bitbucket-pullrequest-tasks-explorer": [
+        {
+          "id": "bitbucket-pullrequest-tasks-list",
+          "name": "Tasks"
+        }
+      ]
+    }
+  },
+  "extensionDependencies": [
+    "vscode.git"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run esbuild -- --minify",
+    "esbuild": "esbuild ./src/extension.js --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild:watch": "npm run esbuild -- --sourcemap --watch",
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "20.2.5",
+    "@types/vscode": "^1.80.0",
+    "@vscode/test-electron": "^2.3.2",
+    "esbuild": "^0.18.17",
+    "eslint": "^8.41.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.1.3"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
