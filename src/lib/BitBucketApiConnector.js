@@ -1,5 +1,9 @@
 import fetch, { Headers } from 'node-fetch';
 
+
+/**
+ * Class representing a connection to the BitBucket API.
+ */
 export default class BitBucketApiConnector {
   constructor(project, repository, credentials) {
     this.baseUrl = 'https://bitbucket.hmmh.de/rest/api/latest';
@@ -10,7 +14,10 @@ export default class BitBucketApiConnector {
     this.getBearer();
   }
 
-  // Get bearer token from bitbucket
+  /**
+   * Retrieves the bearer token for the BitBucket API connection.
+   * If a token is provided in the credentials, it will be used.
+   */
   getBearer() {
     // const url = `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/branches`;
 
@@ -26,9 +33,13 @@ export default class BitBucketApiConnector {
     if (this.credentials.token) this.bearerToken = this.credentials.token;
   }
 
+  /**
+   * Retrieves all open pull requests for the specified project and repository.
+   * @returns {Promise<Array>} A promise that resolves to an array of pull request objects.
+   */
   async getPullRequests() {
     const pullRequests = await fetch(
-      `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/pull-requests`, 
+      `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/pull-requests?limit=1000`, 
       {
         headers: {
           'Authorization': `Bearer ${this.bearerToken}`
@@ -41,11 +52,21 @@ export default class BitBucketApiConnector {
     return pullRequests.values.filter(pr => pr.state === 'OPEN');
   }
 
+  /**
+   * Retrieves the pull request associated with the specified branch.
+   * @param {string} branch - The name of the branch to search for.
+   * @returns {Promise<Object>} A promise that resolves to the pull request object associated with the specified branch.
+   */
   async getPullRequestByBranch(branch) {
     const pullRequests = await this.getPullRequests();
     return pullRequests.find(pr => pr.fromRef.displayId === branch);
   }
 
+  /**
+   * Retrieves all comments and tasks associated with the specified pull request.
+   * @param {string} pullRequestId - The ID of the pull request to retrieve comments for.
+   * @returns {Promise<Object>} A promise that resolves to an object containing general comments, comments, and tasks associated with the specified pull request.
+   */
   async getPullRequestComments(pullRequestId) {
     const { values: activities } = await fetch(
       `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/pull-requests/${pullRequestId}/activities?limit=1000`, 

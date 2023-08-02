@@ -1,5 +1,9 @@
 import vscode from 'vscode';
 
+/**
+ * Prompts the user to enter their Bitbucket username and password, and stores them securely in the extension's context.
+ * @param {vscode.ExtensionContext} context - The extension context.
+ */
 export default async function authenticate(context) {
   const username = await vscode.window.showInputBox({
     prompt: 'Please enter your username',

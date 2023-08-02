@@ -8,6 +8,10 @@ export class CommentsProvider {
     this.files = {};
 	}
 
+  /**
+   * Groups comments by files and refreshes the view.
+   * @param {Array} comments - The comments to update the data with.
+   */
   updateData(comments) {
     comments.forEach(comment => {
       if (!this.files[comment.anchor.path]) {

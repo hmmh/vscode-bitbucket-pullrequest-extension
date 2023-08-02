@@ -1,12 +1,20 @@
 import vscode from 'vscode';
 import path from 'path';
 
+
+/**
+ * Class representing a collection of comments.
+ */
 export default class Comments {
   constructor(context) {
     this.context = context;
     this.comments = {};
   }
 
+  /**
+   * Sets the comments.
+   * @param {Array} comments - An array of comments to be set.
+   */
   setComments(comments) {
     comments.forEach(comment => {
       if (this.comments[comment.id]) return;
@@ -19,6 +27,11 @@ export default class Comments {
     });
   }
 
+  /**
+   * Sets the tooltip for a given comment.
+   * @param {Object} comment - The comment object to set the tooltip for.
+   * @returns {Object} - The hover provider object for the tooltip.
+   */
   setCommentTooltip(comment) {
     const file = comment.anchor.path;
     const workspace = vscode.workspace.workspaceFolders[0].uri.path;

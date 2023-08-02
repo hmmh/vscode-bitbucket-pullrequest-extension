@@ -1,7 +1,11 @@
 import vscode from 'vscode';
 import path from 'path';
 
-export default async function goToComment(comment, context) {
+/**
+ * Opens the file containing the given comment and sets the cursor position to the comment's line.
+ * @param {Object} comment - The comment object containing the anchor path and line number.
+ */
+export default async function goToComment(comment) {
   // open file
   const file = comment.anchor.path;
   const workspace = vscode.workspace.workspaceFolders[0].uri.path;
