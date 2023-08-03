@@ -67,6 +67,8 @@ export class Comment extends vscode.TreeItem {
   constructor(comment) {
     super(comment.text, vscode.TreeItemCollapsibleState.None);
 
+    this.description = comment.author.displayName;
+
     this.command = {
       command: 'bitbucket-pullrequest-tasks.goToComment',
       title: 'Go to task',

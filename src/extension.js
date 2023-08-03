@@ -13,19 +13,21 @@ import PullRequest from './lib/PullRequest.js';
 import Comments from './lib/Comments.js';
 
 async function initPullRequests(context, tasksProvider, commentsProvider, generalCommentsProvider) {
-	const pr = new PullRequest(context, () => {});
+	const comments = new Comments(context);
+	const pr = new PullRequest(context, () => {
+		tasksProvider.updateData(pr.tasks);
+		commentsProvider.updateData(pr.comments);
+		generalCommentsProvider.updateData(pr.generalComments);
+	
+		comments.setComments([
+			...pr.tasks,
+			...pr.comments
+		]);
+	});
 	await pr.loaded;
 	await pr.loadComments();
 
-	tasksProvider.updateData(pr.tasks);
-	commentsProvider.updateData(pr.comments);
-	generalCommentsProvider.updateData(pr.generalComments);
-
-	const comments = new Comments(context);
-	comments.setComments([
-		...pr.tasks,
-		...pr.comments
-	]);
+	return pr;
 }
 
 /**
@@ -35,7 +37,7 @@ export function activate(context) {
 	const tasksProvider = new TasksProvider();
 	const commentsProvider = new CommentsProvider();
 	const generalCommentsProvider = new GeneralCommentsProvider();
-	initPullRequests(context, tasksProvider, commentsProvider, generalCommentsProvider);
+	const pr = initPullRequests(context, tasksProvider, commentsProvider, generalCommentsProvider);
 
 	vscode.window.registerTreeDataProvider('bitbucket-pullrequest-tasks-list', tasksProvider);
 	vscode.window.registerTreeDataProvider('bitbucket-pullrequest-comments-list', commentsProvider);
@@ -45,6 +47,11 @@ export function activate(context) {
 	context.subscriptions.push(vscode.commands.registerCommand('bitbucket-pullrequest-tasks.auth', () => authenticate(context)));
 	context.subscriptions.push(vscode.commands.registerCommand('bitbucket-pullrequest-tasks.authWithToken', () => authenticateWithToken(context)));
 	context.subscriptions.push(vscode.commands.registerCommand('bitbucket-pullrequest-tasks.setupProject', () => setupProject(context)));
+	context.subscriptions.push(vscode.commands.registerCommand('bitbucket-pullrequest-tasks.reloadComments', async () => {
+		const pull = await pr
+		await pull.loadComments();
+		pull.branchChangeCallback();
+	}));
 }
 
 // This method is called when your extension is deactivated

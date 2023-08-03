@@ -24,6 +24,11 @@
       {
         "command": "bitbucket-pullrequest-tasks.setupProject",
         "title": "Bitbucket PullRequest Tasks: Setup Project"
+      },
+      {
+        "command": "bitbucket-pullrequest-tasks.reloadComments",
+        "title": "Bitbucket PullRequest Tasks: Reload comments",
+        "icon": "$(refresh)"
       }
     ],
     "viewsContainers": {
@@ -48,6 +53,15 @@
         {
           "id": "bitbucket-pullrequest-general-comments-list",
           "name": "General Comments"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "bitbucket-pullrequest-tasks.reloadComments",
+          "when": "view == bitbucket-pullrequest-tasks-list || view == bitbucket-pullrequest-comments-list || view == bitbucket-pullrequest-general-comments-list",
+          "group": "navigation"
         }
       ]
     }

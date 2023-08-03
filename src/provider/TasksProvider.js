@@ -64,6 +64,8 @@ export class Task extends vscode.TreeItem {
     super(task.text, vscode.TreeItemCollapsibleState.None);
     this.iconPath = task.state === 'RESOLVED' ? new vscode.ThemeIcon('pass-filled') : new vscode.ThemeIcon('circle-large');
 
+    this.description = task.author.displayName;
+
     this.command = {
       command: 'bitbucket-pullrequest-tasks.goToComment',
       title: 'Go to task',

@@ -35,5 +35,7 @@ export class GeneralCommentsProvider {
 export class Comment extends vscode.TreeItem {
   constructor(comment) {
     super(comment.text, vscode.TreeItemCollapsibleState.None);
+
+    this.description = comment.author.displayName;
   }
 }
