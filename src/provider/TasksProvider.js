@@ -62,12 +62,7 @@ export class File extends vscode.TreeItem {
 export class Task extends vscode.TreeItem {
   constructor(task) {
     super(task.text, vscode.TreeItemCollapsibleState.None);
-    this.icon = task.state === 'RESOLVED' ? 'checkbox--checked.svg' : 'checkbox--unchecked.svg';
-
-    this.iconPath = {
-      light: path.join(__filename, '..', '..', 'resources', 'light', this.icon),
-      dark: path.join(__filename, '..', '..', 'resources', 'dark', this.icon)
-    };
+    this.iconPath = task.state === 'RESOLVED' ? new vscode.ThemeIcon('pass-filled') : new vscode.ThemeIcon('circle-large');
 
     this.command = {
       command: 'bitbucket-pullrequest-tasks.goToComment',

@@ -31,7 +31,7 @@
         {
           "id": "bitbucket-pullrequest-tasks-explorer",
           "title": "Bitbucket PullRequest",
-          "icon": "resources/tasks-explorer.svg"
+          "icon": "$(tasklist)"
         }
       ]
     },
