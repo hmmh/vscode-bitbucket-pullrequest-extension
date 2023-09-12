@@ -13,6 +13,9 @@ export class CommentsProvider {
    * @param {Array} comments - The comments to update the data with.
    */
   updateData(comments) {
+    if (comments === undefined) return;
+    this.files = {};
+
     comments.forEach(comment => {
       if (!this.files[comment.anchor.path]) {
         this.files[comment.anchor.path] = [];

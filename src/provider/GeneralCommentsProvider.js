@@ -8,6 +8,8 @@ export class GeneralCommentsProvider {
 	}
 
   updateData(comments) {
+    if (comments === undefined) return;
+
     this.comments = comments;
 
     this.refresh();

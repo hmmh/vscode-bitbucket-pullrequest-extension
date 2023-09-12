@@ -2,7 +2,12 @@
   "name": "bitbucket-pullrequest-tasks",
   "displayName": "Bitbucket PullRequest Tasks",
   "description": "Shows the open tasks inside of the editor and opens the files in which they are made.",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "publisher": "Thorben Ziegler <thorben.ziegler@hmmh.de>",
+  "repository":{
+    "type": "git",
+    "url": "https://bitbucket.hmmh.de/scm/u3uiws/vscode-bitbucket-extension.git"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -20,6 +25,10 @@
       {
         "command": "bitbucket-pullrequest-tasks.authWithToken",
         "title": "Bitbucket PullRequest Tasks: Authenticate with token"
+      },
+      {
+        "command": "bitbucket-pullrequest-tasks.setHostURL",
+        "title": "Bitbucket PullRequest Tasks: Set Host Url"
       },
       {
         "command": "bitbucket-pullrequest-tasks.setupProject",
@@ -48,14 +57,28 @@
         },
         {
           "id": "bitbucket-pullrequest-comments-list",
-          "name": "Comments"
+          "name": "Comments",
+          "when": "bitbucket-pullrequest-tasks.ready && bitbucket-pullrequest-tasks.prLoaded"
         },
         {
           "id": "bitbucket-pullrequest-general-comments-list",
-          "name": "General Comments"
+          "name": "General Comments",
+          "when": "bitbucket-pullrequest-tasks.ready && bitbucket-pullrequest-tasks.prLoaded"
         }
       ]
     },
+    "viewsWelcome": [
+      {
+        "view": "bitbucket-pullrequest-tasks-list",
+        "contents": "To see the comments of your Please authenticate and set up your BitBucket Project first. \n[Authenticate](command:bitbucket-pullrequest-tasks.authWithToken)\n[Setup Project](command:bitbucket-pullrequest-tasks.setupProject)",
+        "when": "!bitbucket-pullrequest-tasks.ready"
+      },
+      {
+        "view": "bitbucket-pullrequest-tasks-list",
+        "contents": "There is no PullRequest for this branch. \n[Create PullRequest](command:bitbucket-pullrequest-tasks.createPR)",
+        "when": "bitbucket-pullrequest-tasks.ready && !bitbucket-pullrequest-tasks.prLoaded"
+      }
+    ],
     "menus": {
       "view/title": [
         {
@@ -75,7 +98,8 @@
     "esbuild:watch": "npm run esbuild -- --sourcemap --watch",
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "node ./test/runTest.js"
+    "test": "node ./test/runTest.js",
+    "vscode:bundle": "npm run vscode:prepublish && vsce package"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -83,6 +107,7 @@
     "@types/node": "20.2.5",
     "@types/vscode": "^1.80.0",
     "@vscode/test-electron": "^2.3.2",
+    "@vscode/vsce": "^2.21.0",
     "esbuild": "^0.18.17",
     "eslint": "^8.41.0",
     "glob": "^8.1.0",

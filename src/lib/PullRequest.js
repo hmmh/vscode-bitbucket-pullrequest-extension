@@ -13,6 +13,10 @@ export default class PullRequest {
       this.setLoaded = resolve;
     });
     this.loadGitRepository();
+
+    this.generalComments = [];
+    this.comments = [];
+    this.tasks = [];
   }
 
   /**
@@ -25,8 +29,9 @@ export default class PullRequest {
     this.gitApi.onDidChangeState(async () => {
       this.repository = this.gitApi.repositories[0];
       
-      this.repository.state.onDidChange(() => {
-        this.load();
+      this.repository.state.onDidChange(async () => {
+        await this.load();
+        await this.loadComments();
         this.branchChangeCallback();
       });
     });
@@ -43,7 +48,8 @@ export default class PullRequest {
     this.pullRequest = await this.getPullRequest();
 
     if (!this.pullRequest) return;
-    
+
+    vscode.commands.executeCommand('setContext', 'bitbucket-pullrequest-tasks.prLoaded', true);    
     this.setLoaded();
   }
 
@@ -56,12 +62,13 @@ export default class PullRequest {
     const username = await this.context.secrets.get('bitbucket-pullrequest-tasks.username');
     const password = await this.context.secrets.get('bitbucket-pullrequest-tasks.password');
     const token = await this.context.secrets.get('bitbucket-pullrequest-tasks.token');
+    const hostURL = this.context.workspaceState.get('bitbucket-pullrequest-tasks.hostURL');
     const project = this.context.workspaceState.get('bitbucket-pullrequest-tasks.project');
     const repo = this.context.workspaceState.get('bitbucket-pullrequest-tasks.repository');
-    
-    if (!project || !repo) return false;
 
-    this.connector = new BitBucketApiConnector(project, repo, {
+    if (!hostURL || !project || !repo) return false;
+    
+    this.connector = new BitBucketApiConnector(hostURL, project, repo, {
       username,
       password,
       token
@@ -85,5 +92,9 @@ export default class PullRequest {
     this.generalComments = generalComments;
     this.comments = comments;
     this.tasks = tasks;
+  }
+
+  async toggleTaskState(task) {
+    return await this.connector.changeTaskState(this.pullRequest.id, task.id, task.version, task.state === 'OPEN');
   }
 }

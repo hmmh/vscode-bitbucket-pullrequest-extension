@@ -5,8 +5,8 @@ import fetch, { Headers } from 'node-fetch';
  * Class representing a connection to the BitBucket API.
  */
 export default class BitBucketApiConnector {
-  constructor(project, repository, credentials) {
-    this.baseUrl = 'https://bitbucket.hmmh.de/rest/api/latest';
+  constructor(hostURL, project, repository, credentials) {
+    this.baseUrl = `${hostURL}/rest/api/latest`;
     this.project = project;
     this.repository = repository;
     this.credentials = credentials;
@@ -29,7 +29,7 @@ export default class BitBucketApiConnector {
     //   .then(json => {
     //     this.bearerToken = json.values[0].latestCommit;
     //   });
-    // NDM0NzQ5NTE2ODIwOsVSgk901UBGWLlxovaRCdZXrRfv
+    // 
     if (this.credentials.token) this.bearerToken = this.credentials.token;
   }
 
@@ -105,5 +105,24 @@ export default class BitBucketApiConnector {
       comments,
       tasks
     };
+  }
+
+  async changeTaskState(pullRequestId, taskId, taskVersion, resolved) {
+    const url = `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/pull-requests/${pullRequestId}/comments/${taskId}`;
+    const body = {
+      version: taskVersion,
+      state: resolved ? 'RESOLVED' : 'OPEN'
+    };
+
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${this.bearerToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    return res.json();
   }
 }

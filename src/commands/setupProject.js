@@ -1,4 +1,5 @@
 import vscode from 'vscode';
+import setReady from '../lib/setReady.js';
 
 /**
  * Prompts the user to enter the name of the current Bitbucket project and repository,
@@ -23,6 +24,8 @@ export default async function setupProject(context) {
 
   await context.workspaceState.update('bitbucket-pullrequest-tasks.project', project);
   await context.workspaceState.update('bitbucket-pullrequest-tasks.repository', repository);
+
+  await setReady(context);
 
   vscode.window.showInformationMessage('Bitbucket project set up!');
 }
