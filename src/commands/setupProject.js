@@ -1,5 +1,9 @@
 import vscode from 'vscode';
-import setReady from '../lib/setReady.js';
+import setReady from '@/lib/setReady.js';
+
+import { CONTEXT_KEYS } from '@/config/variables.js';
+
+import setHostURL from '@/commands/setHostURL.js';
 
 /**
  * Prompts the user to enter the name of the current Bitbucket project and repository,
@@ -7,8 +11,10 @@ import setReady from '../lib/setReady.js';
  * @param {vscode.ExtensionContext} context - The extension context.
  */
 export default async function setupProject(context) {
-  const projectVal = context.workspaceState.get('bitbucket-pullrequest-tasks.project');
-  const repoVal = context.workspaceState.get('bitbucket-pullrequest-tasks.repository');
+  await setHostURL(context);
+
+  const projectVal = context.workspaceState.get(CONTEXT_KEYS.project);
+  const repoVal = context.workspaceState.get(CONTEXT_KEYS.repository);
 
   const project = await vscode.window.showInputBox({
     prompt: 'Please enter the name of the current Bitbucket project',
@@ -22,8 +28,8 @@ export default async function setupProject(context) {
     placeHolder: 'Repository'
   });
 
-  await context.workspaceState.update('bitbucket-pullrequest-tasks.project', project);
-  await context.workspaceState.update('bitbucket-pullrequest-tasks.repository', repository);
+  await context.workspaceState.update(CONTEXT_KEYS.project, project);
+  await context.workspaceState.update(CONTEXT_KEYS.repository, repository);
 
   await setReady(context);
 

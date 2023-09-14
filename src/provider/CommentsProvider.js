@@ -1,6 +1,8 @@
 import vscode from 'vscode';
 import path from 'path';
 
+import { COMMAND_KEYS } from '@/config/variables.js';
+
 export class CommentsProvider {  
   constructor() {
     this._onDidChangeTreeData = new vscode.EventEmitter();
@@ -73,7 +75,7 @@ export class Comment extends vscode.TreeItem {
     this.description = comment.author.displayName;
 
     this.command = {
-      command: 'bitbucket-pullrequest-tasks.goToComment',
+      command: COMMAND_KEYS.goToComment,
       title: 'Go to task',
       arguments: [comment]
     };

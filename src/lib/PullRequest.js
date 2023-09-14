@@ -1,22 +1,43 @@
 import vscode from 'vscode';
-import BitBucketApiConnector from './BitBucketApiConnector.js';
+import BitBucketApiConnector from '@/lib/BitBucketApiConnector.js';
 
+import { CONTEXT_KEYS, SECRET_KEYS } from '@/config/variables.js';
 
 /**
  * Represents a pull request
  */
-export default class PullRequest {
-  constructor(context, branchChangeCallback) {
-    this.context = context;
-    this.branchChangeCallback = branchChangeCallback;
+class PullRequest {
+  constructor() {
     this.loaded = new Promise((resolve) => {
       this.setLoaded = resolve;
     });
-    this.loadGitRepository();
 
     this.generalComments = [];
     this.comments = [];
     this.tasks = [];
+    this.subscribers = new Set();
+  }
+
+  setContext(context) {
+    this.context = context;
+  }
+
+  subscribe(subscriber) {
+    this.subscribers.add(subscriber);
+
+    return () => {
+      this.subscribers.delete(subscriber);
+    }
+  }
+
+  notifySubscribers() {
+    this.subscribers.forEach((subscriberCallback) => {
+      subscriberCallback({
+        generalComments: this.generalComments,
+        comments: this.comments,
+        tasks: this.tasks
+      });
+    });
   }
 
   /**
@@ -30,9 +51,9 @@ export default class PullRequest {
       this.repository = this.gitApi.repositories[0];
       
       this.repository.state.onDidChange(async () => {
-        await this.load();
+        if (!await this.load()) return;
+        
         await this.loadComments();
-        this.branchChangeCallback();
       });
     });
   }
@@ -43,14 +64,21 @@ export default class PullRequest {
    * Otherwise, the `loaded` promise is resolved.
    */
   async load() {
-    if (!this.connector) await this.connectToBitBucket();
+    if (!this.connector) {
+      this.connector = await this.connectToBitBucket();
+    }
+
+    if (!this.connector) return false;
+
     this.branchName = this.repository.state.HEAD.name;
     this.pullRequest = await this.getPullRequest();
 
-    if (!this.pullRequest) return;
+    if (!this.pullRequest) return false;
 
-    vscode.commands.executeCommand('setContext', 'bitbucket-pullrequest-tasks.prLoaded', true);    
+    vscode.commands.executeCommand('setContext', CONTEXT_KEYS.prLoaded, true);    
     this.setLoaded();
+
+    return true;
   }
 
   /**
@@ -59,16 +87,18 @@ export default class PullRequest {
    * Otherwise, it creates a new instance of the BitBucketApiConnector class with the provided credentials.
    */
   async connectToBitBucket() {
-    const username = await this.context.secrets.get('bitbucket-pullrequest-tasks.username');
-    const password = await this.context.secrets.get('bitbucket-pullrequest-tasks.password');
-    const token = await this.context.secrets.get('bitbucket-pullrequest-tasks.token');
-    const hostURL = this.context.workspaceState.get('bitbucket-pullrequest-tasks.hostURL');
-    const project = this.context.workspaceState.get('bitbucket-pullrequest-tasks.project');
-    const repo = this.context.workspaceState.get('bitbucket-pullrequest-tasks.repository');
-
-    if (!hostURL || !project || !repo) return false;
+    const ready = this.context.workspaceState.get(CONTEXT_KEYS.ready);
     
-    this.connector = new BitBucketApiConnector(hostURL, project, repo, {
+    if (!ready) return false;
+
+    const username = await this.context.secrets.get(SECRET_KEYS.user);
+    const password = await this.context.secrets.get(SECRET_KEYS.password);
+    const token = await this.context.secrets.get(SECRET_KEYS.token);
+    const hostURL = this.context.workspaceState.get(CONTEXT_KEYS.hostURL);
+    const project = this.context.workspaceState.get(CONTEXT_KEYS.project);
+    const repo = this.context.workspaceState.get(CONTEXT_KEYS.repository);
+    
+    return new BitBucketApiConnector(hostURL, project, repo, {
       username,
       password,
       token
@@ -92,9 +122,18 @@ export default class PullRequest {
     this.generalComments = generalComments;
     this.comments = comments;
     this.tasks = tasks;
+
+    this.notifySubscribers();
   }
 
+  /**
+   * Toggles the state of a task in the pull request.
+   * @param {Object} task - The task to toggle.
+   * @returns {Promise<Object>} - A promise that resolves with the updated task object.
+   */
   async toggleTaskState(task) {
     return await this.connector.changeTaskState(this.pullRequest.id, task.id, task.version, task.state === 'OPEN');
   }
 }
+
+export const pr = new PullRequest();

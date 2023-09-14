@@ -1,5 +1,7 @@
 import vscode from 'vscode';
 
+import { pr } from '@/lib/PullRequest.js';
+
 export default class TasksView {
   constructor(provider, treeViewKey) {
     this.provider = provider;
@@ -12,15 +14,11 @@ export default class TasksView {
     this.tasksView.onDidChangeCheckboxState(this.handleCheckboxClick.bind(this));
   }
 
-  setPR(pr) {
-    this.pr = pr;
-  }
-
   handleCheckboxClick(e) {
     const {items} = e;
     items.forEach(async (item) => {
       const task = item[0];
-      const res = await this.pr.toggleTaskState(task.task);
+      const res = await pr.toggleTaskState(task.task);
       task.updateTask(res);
     });
   }

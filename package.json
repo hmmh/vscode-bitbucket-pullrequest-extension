@@ -35,6 +35,10 @@
         "title": "Bitbucket PullRequest Tasks: Setup Project"
       },
       {
+        "command": "bitbucket-pullrequest-tasks.resetProject",
+        "title": "Bitbucket PullRequest Tasks: Reset Project"
+      },
+      {
         "command": "bitbucket-pullrequest-tasks.reloadComments",
         "title": "Bitbucket PullRequest Tasks: Reload comments",
         "icon": "$(refresh)"
@@ -83,7 +87,7 @@
       "view/title": [
         {
           "command": "bitbucket-pullrequest-tasks.reloadComments",
-          "when": "view == bitbucket-pullrequest-tasks-list || view == bitbucket-pullrequest-comments-list || view == bitbucket-pullrequest-general-comments-list",
+          "when": "bitbucket-pullrequest-tasks.prLoaded && (view == bitbucket-pullrequest-tasks-list || view == bitbucket-pullrequest-comments-list || view == bitbucket-pullrequest-general-comments-list)",
           "group": "navigation"
         }
       ]

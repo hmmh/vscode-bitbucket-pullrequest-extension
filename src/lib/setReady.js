@@ -1,14 +1,20 @@
 import vscode from 'vscode';
 
+import { CONTEXT_KEYS, SECRET_KEYS } from '@/config/variables.js';
+
+import init from '@/lib/init.js';
+
 export default async function setReady(context) {
-  const username = await context.secrets.get('bitbucket-pullrequest-tasks.username');
-  const password = await context.secrets.get('bitbucket-pullrequest-tasks.password');
-  const token = await context.secrets.get('bitbucket-pullrequest-tasks.token');
-  const project = context.workspaceState.get('bitbucket-pullrequest-tasks.project');
-  const repo = context.workspaceState.get('bitbucket-pullrequest-tasks.repository');
+  const username = await context.secrets.get(SECRET_KEYS.user);
+  const password = await context.secrets.get(SECRET_KEYS.password);
+  const token = await context.secrets.get(SECRET_KEYS.token);
+  const project = context.workspaceState.get(CONTEXT_KEYS.project);
+  const repo = context.workspaceState.get(CONTEXT_KEYS.repository);
 
   if (((username && password) || token) && (project && repo)) {
-    context.workspaceState.update('bitbucket-pullrequest-tasks.ready', true);
-  	vscode.commands.executeCommand('setContext', 'bitbucket-pullrequest-tasks.ready', true);
+    context.workspaceState.update(CONTEXT_KEYS.ready, true);
+  	vscode.commands.executeCommand('setContext', CONTEXT_KEYS.ready, true);
+
+    init(context);
   }
 }

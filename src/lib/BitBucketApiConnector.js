@@ -1,6 +1,5 @@
 import fetch, { Headers } from 'node-fetch';
 
-
 /**
  * Class representing a connection to the BitBucket API.
  */

@@ -1,5 +1,8 @@
 import vscode from 'vscode';
-import setReady from '../lib/setReady.js';
+
+import { SECRET_KEYS } from '@/config/variables.js';
+
+import setReady from '@/lib/setReady.js';
 
 /**
  * Prompts the user to enter their Bitbucket token and stores it in the extension's secrets.
@@ -12,7 +15,7 @@ export default async function authenticateWithToken(context) {
     placeHolder: 'Token'
   });
 
-  await context.secrets.store('bitbucket-pullrequest-tasks.token', token);
+  await context.secrets.store(SECRET_KEYS.token, token);
 
   await setReady(context);
 

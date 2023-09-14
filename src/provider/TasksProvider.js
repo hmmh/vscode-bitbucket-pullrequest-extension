@@ -1,6 +1,8 @@
 import vscode from 'vscode';
 import path from 'path';
 
+import { COMMAND_KEYS } from '@/config/variables.js';
+
 export class TasksProvider {  
   constructor() {
     this._onDidChangeTreeData = new vscode.EventEmitter();
@@ -71,7 +73,7 @@ export class Task extends vscode.TreeItem {
     this.task = task;
     this.description = task.author.displayName;
     this.command = {
-      command: 'bitbucket-pullrequest-tasks.goToComment',
+      command: COMMAND_KEYS.goToComment,
       title: 'Go to task',
       arguments: [task]
     };
@@ -85,6 +87,8 @@ export class Task extends vscode.TreeItem {
   }
 
   updateCheckboxState() {
-    this.checkboxState = this.task.state === 'RESOLVED' ? vscode.TreeItemCheckboxState.Checked : vscode.TreeItemCheckboxState.Unchecked;
+    this.checkboxState = this.task.state === 'RESOLVED' 
+      ? vscode.TreeItemCheckboxState.Checked
+      : vscode.TreeItemCheckboxState.Unchecked;
   }
 }

@@ -24,6 +24,8 @@ export default class Comments {
         tooltip: this.setCommentTooltip(comment),
         // decoration: this.setCommentTooltip(comment)
       };
+
+      this.setLineDecoration(comment);
     });
   }
 
@@ -55,6 +57,18 @@ export default class Comments {
     this.context.subscriptions.push(hoverProvider);
 
     return hoverProvider;
+  }
+
+  setLineDecoration(comment) {
+    const editor = vscode.window.activeTextEditor;
+    const line = comment.anchor.line - 1;
+    const range = new vscode.Range(line, 0, line, 0);
+
+    const decorationType = vscode.window.createTextEditorDecorationType({
+      gutterIconPath: new vscode.ThemeIcon('pencil')
+    });
+  
+    editor.setDecorations(decorationType, [{ range }]);
   }
 
   // setCommentDecoration(comment) {
