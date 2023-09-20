@@ -11,7 +11,7 @@ import setReady from '@/lib/setReady.js';
  */
 export default async function authenticateWithToken(context) {
   const token = await vscode.window.showInputBox({
-    prompt: 'Please enter your token',
+    prompt: 'Please enter your token (You can get generate it in your BitBucket profile settings)',
     placeHolder: 'Token'
   });
 

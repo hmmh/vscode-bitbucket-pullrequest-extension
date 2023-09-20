@@ -22,6 +22,11 @@ class PullRequest {
     this.context = context;
   }
 
+  /**
+   * Adds a subscriber to the list of subscribers for this pull request.
+   * @param {Function} subscriber - The subscriber function to add.
+   * @returns {Function} A function that can be called to remove the subscriber from the list.
+   */
   subscribe(subscriber) {
     this.subscribers.add(subscriber);
 
@@ -30,6 +35,10 @@ class PullRequest {
     }
   }
 
+  /**
+   * Notifies all subscribers with the current state of the pull request.
+   * @returns {void}
+   */
   notifySubscribers() {
     this.subscribers.forEach((subscriberCallback) => {
       subscriberCallback({
@@ -57,6 +66,10 @@ class PullRequest {
     });
   }
 
+  /**
+   * Initializes the repository and sets up a listener for changes to the repository state.
+   * @returns {Promise<void>} A Promise that resolves when the repository is successfully loaded and comments are loaded.
+   */
   async initRepository() {
     this.repository = this.gitApi.repositories[0];
       
