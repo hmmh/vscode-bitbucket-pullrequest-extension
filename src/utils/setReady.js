@@ -2,7 +2,7 @@ import vscode from 'vscode';
 
 import { CONTEXT_KEYS, SECRET_KEYS } from '@/config/variables.js';
 
-import init from '@/lib/init.js';
+import init from '@/utils/init.js';
 
 export default async function setReady(context) {
   const username = await context.secrets.get(SECRET_KEYS.user);

@@ -1,13 +1,17 @@
 import vscode from 'vscode';
 
+import { CONTEXT_KEYS } from '@/config/variables.js';
+
 import { File } from './TreeItems/File.js';
 import { Comment } from './TreeItems/Comment.js';
 
 export class CommentsProvider {  
-  constructor() {
+  constructor(context) {
     this._onDidChangeTreeData = new vscode.EventEmitter();
     this.onDidChangeTreeData = this._onDidChangeTreeData.event;
     this.files = {};
+
+    this.hostURL = context.workspaceState.get(CONTEXT_KEYS.hostURL);
 	}
 
   /**
@@ -44,7 +48,7 @@ export class CommentsProvider {
     const items = [];
 
     Object.entries(this.files).forEach(([filePath, comments]) => {
-      items.push(new File(filePath, comments, Comment));
+      items.push(new File(filePath, comments, Comment, this.hostURL));
     });
 
     return items;

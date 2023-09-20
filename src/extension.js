@@ -7,7 +7,7 @@ import {
 } from './config/variables.js';
 
 // lib
-import init from '@/lib/init.js';
+import init from '@/utils/init.js';
 import { pr } from '@/lib/PullRequest.js';
 
 // commands

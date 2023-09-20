@@ -70,7 +70,7 @@ export default class BitBucketApiConnector {
    */
   async getPullRequestComments(pullRequestId) {
     const { values: activities } = await fetch(
-      `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/pull-requests/${pullRequestId}/activities?limit=1000`, 
+      `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/pull-requests/${pullRequestId}/activities?limit=1000&avatarSize=32`, 
       {
         headers: {
           'Authorization': `Bearer ${this.bearerToken}`

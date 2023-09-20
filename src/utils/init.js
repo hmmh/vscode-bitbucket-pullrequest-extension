@@ -33,9 +33,9 @@ async function initPullRequests(context, tasksView, commentsProvider, generalCom
 }
 
 export default async function init(context) {
-  const tasksView = initTasksView();
-	const commentsProvider = new CommentsProvider();
-	const generalCommentsView = initGeneralCommentsView();
+  const tasksView = initTasksView(context);
+	const commentsProvider = new CommentsProvider(context);
+	const generalCommentsView = initGeneralCommentsView(context);
 
 	initPullRequests(context, tasksView, commentsProvider, generalCommentsView);
 

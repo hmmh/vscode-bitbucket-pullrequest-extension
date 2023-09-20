@@ -2,7 +2,7 @@ import vscode from 'vscode';
 
 import { SECRET_KEYS } from '@/config/variables.js';
 
-import setReady from '@/lib/setReady.js';
+import setReady from '@/utils/setReady.js';
 
 /**
  * Prompts the user to enter their Bitbucket username and password, and stores them securely in the extension's context.

@@ -2,8 +2,9 @@
   "name": "bitbucket-pullrequest-tasks",
   "displayName": "Bitbucket PullRequest Tasks",
   "description": "Shows the tasks and comments inside of the editor and opens the files in which they are made.",
-  "version": "1.0.0",
-  "publisher": "Thorben Ziegler <thorben.ziegler@hmmh.de>",
+  "version": "1.0.2",
+  "author": "Thorben Ziegler <thorben.ziegler@hmmh.de>",
+  "publisher": "thorbenziegler",
   "repository":{
     "type": "git",
     "url": "https://bitbucket.hmmh.de/scm/u3uiws/vscode-bitbucket-extension.git"
@@ -83,7 +84,7 @@
       },
       {
         "view": "bitbucket-pullrequest-tasks-list",
-        "contents": "There is no PullRequest for this branch. \n[Create PullRequest](command:bitbucket-pullrequest-tasks.createPR)",
+        "contents": "There is no Pull Request for this branch. \n[Create Pull Request](command:bitbucket-pullrequest-tasks.createPR)",
         "when": "bitbucket-pullrequest-tasks.ready && !bitbucket-pullrequest-tasks.prLoaded"
       }
     ],

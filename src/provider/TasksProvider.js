@@ -1,13 +1,16 @@
 import vscode from 'vscode';
 
+import { CONTEXT_KEYS } from '@/config/variables.js';
+
 import { File } from './TreeItems/File.js';
 import { Task } from './TreeItems/Task.js';
 
 export class TasksProvider {  
-  constructor() {
+  constructor(context) {
     this._onDidChangeTreeData = new vscode.EventEmitter();
     this.onDidChangeTreeData = this._onDidChangeTreeData.event;
 
+    this.hostURL = context.workspaceState.get(CONTEXT_KEYS.hostURL);
     this.files = {};
 	}
 
@@ -42,7 +45,7 @@ export class TasksProvider {
     const items = [];
 
     Object.entries(this.files).forEach(([filePath, tasks]) => {
-      items.push(new File(filePath, tasks, Task));
+      items.push(new File(filePath, tasks, Task, this.hostURL));
     });
 
     return items;

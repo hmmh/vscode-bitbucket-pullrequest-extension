@@ -1,5 +1,5 @@
 import vscode from 'vscode';
-import setReady from '@/lib/setReady.js';
+import setReady from '@/utils/setReady.js';
 
 import { CONTEXT_KEYS } from '@/config/variables.js';
 

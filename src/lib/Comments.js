@@ -3,6 +3,8 @@ import path from 'path';
 
 import { CONTEXT_KEYS } from '@/config/variables.js';
 
+import { getCommentMarkdown } from '@/utils/markdown.js';
+
 /**
  * Class representing a collection of comments.
  */
@@ -60,18 +62,14 @@ export default class Comments {
     const workspace = vscode.workspace.workspaceFolders[0].uri.path;
     const uri = vscode.Uri.parse(file);
     const filePath = path.join(workspace, uri.path);
+    const hostURL = this.context.workspaceState.get(CONTEXT_KEYS.hostURL);
   
     // set tooltip
     const hoverProvider = vscode.languages.registerHoverProvider({ pattern: filePath }, {
       provideHover(document, position) {  
         if (position.line !== comment.anchor.line - 1) return;
 
-        const markdownString = new vscode.MarkdownString();
-        markdownString.appendMarkdown(`<h2>PullRequest Comment</h2><strong>${comment.author.displayName}</strong>: ${comment.text}`);
-        markdownString.supportHtml = true;
-        markdownString.isTrusted = true;
-
-        return new vscode.Hover(markdownString);
+        return new vscode.Hover(getCommentMarkdown(comment, hostURL));
       }
     });
     
@@ -92,10 +90,10 @@ export default class Comments {
 
     const decorationType = vscode.window.createTextEditorDecorationType({
       light: {
-        gutterIconPath: this.context.asAbsolutePath('src/icons/light/comment-unresolved.svg')
+        gutterIconPath: this.context.asAbsolutePath('assets/icons/light/comment-unresolved.svg')
       },
       dark: {
-        gutterIconPath: this.context.asAbsolutePath('src/icons/dark/comment-unresolved.svg')
+        gutterIconPath: this.context.asAbsolutePath('assets/icons/dark/comment-unresolved.svg')
       },
       gutterIconSize: '50%',
       overviewRulerColor: new vscode.ThemeColor('minimap.warningHighlight'),
