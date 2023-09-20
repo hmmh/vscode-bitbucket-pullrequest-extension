@@ -13,8 +13,20 @@ import setHostURL from '@/commands/setHostURL.js';
 export default async function setupProject(context) {
   await setHostURL(context);
 
-  const projectVal = context.workspaceState.get(CONTEXT_KEYS.project);
-  const repoVal = context.workspaceState.get(CONTEXT_KEYS.repository);
+  let projectVal = context.workspaceState.get(CONTEXT_KEYS.project);
+  let repoVal = context.workspaceState.get(CONTEXT_KEYS.repository);
+
+  if (!projectVal || !repoVal) {
+    const gitExtension = vscode.extensions.getExtension('vscode.git').exports;
+    const gitApi = gitExtension.getAPI(1);
+    const repository = gitApi.repositories[0];
+    const remoteUrl = repository.state.remotes[0].fetchUrl.replace('ssh://', 'https://').replace('.git', '');
+    const url = new URL(remoteUrl);
+    const path = url.pathname.split('/');
+
+    if (!projectVal) projectVal = path[1];
+    if (!repoVal) repoVal = path[2];
+  }
 
   const project = await vscode.window.showInputBox({
     prompt: 'Please enter the name of the current Bitbucket project',

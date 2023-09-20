@@ -1,7 +1,7 @@
 import vscode from 'vscode';
 import BitBucketApiConnector from '@/lib/BitBucketApiConnector.js';
 
-import { CONTEXT_KEYS, SECRET_KEYS } from '@/config/variables.js';
+import { CONTEXT_KEYS, SECRET_KEYS, COMMENT_TYPES } from '@/config/variables.js';
 
 /**
  * Represents a pull request
@@ -47,15 +47,28 @@ class PullRequest {
   loadGitRepository() {
     const gitExtension = vscode.extensions.getExtension('vscode.git').exports;
     this.gitApi = gitExtension.getAPI(1);
+
+    if (this.gitApi.repositories.length > 0) {
+      this.initRepository();
+    }
+
     this.gitApi.onDidChangeState(async () => {
-      this.repository = this.gitApi.repositories[0];
-      
-      this.repository.state.onDidChange(async () => {
-        if (!await this.load()) return;
-        
-        await this.loadComments();
-      });
+      this.initRepository();
     });
+  }
+
+  async initRepository() {
+    this.repository = this.gitApi.repositories[0];
+      
+    this.repository.state.onDidChange(async () => {
+      if (!await this.load()) return;
+      
+      await this.loadComments();
+    });
+
+    if (!await this.load()) return;
+      
+    await this.loadComments();
   }
 
   /**
@@ -132,7 +145,16 @@ class PullRequest {
    * @returns {Promise<Object>} - A promise that resolves with the updated task object.
    */
   async toggleTaskState(task) {
-    return await this.connector.changeTaskState(this.pullRequest.id, task.id, task.version, task.state === 'OPEN');
+    const updatedTask = {
+      ...task,
+      ...await this.connector.changeTaskState(this.pullRequest.id, task.id, task.version, task.state === 'OPEN')
+    };
+
+    const index = this[updatedTask.type + 's'].findIndex((item) => item.id === updatedTask.id);
+    this[updatedTask.type + 's'][index] = updatedTask;
+    this.notifySubscribers();
+
+    return updatedTask;
   }
 }
 

@@ -1,5 +1,8 @@
 import vscode from 'vscode';
 
+import { GeneralComment } from '@/provider/TreeItems/GeneralComment.js';
+import { Task } from './TreeItems/Task.js';
+
 export class GeneralCommentsProvider {  
   constructor() {
     this._onDidChangeTreeData = new vscode.EventEmitter();
@@ -27,17 +30,14 @@ export class GeneralCommentsProvider {
     const items = [];
 
     this.comments.forEach((comment) => {
-      items.push(new Comment(comment));
+      if (comment.severity === 'BLOCKER') {
+        items.push(new Task(comment));
+        return;
+      }
+
+      items.push(new GeneralComment(comment));
     });
 
     return items;
 	}
-}
-
-export class Comment extends vscode.TreeItem {
-  constructor(comment) {
-    super(comment.text, vscode.TreeItemCollapsibleState.None);
-
-    this.description = comment.author.displayName;
-  }
 }

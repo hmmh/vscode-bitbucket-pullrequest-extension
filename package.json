@@ -1,7 +1,7 @@
 {
   "name": "bitbucket-pullrequest-tasks",
   "displayName": "Bitbucket PullRequest Tasks",
-  "description": "Shows the open tasks inside of the editor and opens the files in which they are made.",
+  "description": "Shows the tasks and comments inside of the editor and opens the files in which they are made.",
   "version": "1.0.0",
   "publisher": "Thorben Ziegler <thorben.ziegler@hmmh.de>",
   "repository":{
@@ -18,10 +18,6 @@
   "main": "./out/main.js",
   "contributes": {
     "commands": [
-      {
-        "command": "bitbucket-pullrequest-tasks.auth",
-        "title": "Bitbucket PullRequest Tasks: Authenticate"
-      },
       {
         "command": "bitbucket-pullrequest-tasks.authWithToken",
         "title": "Bitbucket PullRequest Tasks: Authenticate with token"
@@ -42,6 +38,14 @@
         "command": "bitbucket-pullrequest-tasks.reloadComments",
         "title": "Bitbucket PullRequest Tasks: Reload comments",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "bitbucket-pullrequest-tasks.showCommentDetails",
+        "title": "Show comment details"
+      },
+      {
+        "command": "bitbucket-pullrequest-tasks.toggleTask",
+        "title": "Toggle task"
       }
     ],
     "viewsContainers": {
@@ -74,7 +78,7 @@
     "viewsWelcome": [
       {
         "view": "bitbucket-pullrequest-tasks-list",
-        "contents": "To see the comments of your Please authenticate and set up your BitBucket Project first. \n[Authenticate](command:bitbucket-pullrequest-tasks.authWithToken)\n[Setup Project](command:bitbucket-pullrequest-tasks.setupProject)",
+        "contents": "To see the comments of your Pull Request, please authenticate and set up your BitBucket Project first. \n[Authenticate](command:bitbucket-pullrequest-tasks.authWithToken)\n[Setup Project](command:bitbucket-pullrequest-tasks.setupProject)",
         "when": "!bitbucket-pullrequest-tasks.ready"
       },
       {
@@ -89,6 +93,33 @@
           "command": "bitbucket-pullrequest-tasks.reloadComments",
           "when": "bitbucket-pullrequest-tasks.prLoaded && (view == bitbucket-pullrequest-tasks-list || view == bitbucket-pullrequest-comments-list || view == bitbucket-pullrequest-general-comments-list)",
           "group": "navigation"
+        }
+      ],
+      "editor/lineNumber/context": [
+        {
+            "command": "bitbucket-pullrequest-tasks.showCommentDetails",
+            "when": "editorLineNumber in bitbucket-pullrequest-tasks.commentLines",
+            "group": "bitbucket-pullrequest-tasks"
+        }
+      ],
+      "view/item/context": [
+        {
+            "command": "bitbucket-pullrequest-tasks.showCommentDetails",
+            "when": "viewItem == task"
+        },
+        {
+          "command": "bitbucket-pullrequest-tasks.toggleTask",
+          "when": "viewItem == task"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "bitbucket-pullrequest-tasks.showCommentDetails",
+          "when": "false"
+        },
+        {
+          "command": "bitbucket-pullrequest-tasks.toggleTask",
+          "when": "false"
         }
       ]
     }

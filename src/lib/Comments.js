@@ -1,32 +1,53 @@
 import vscode from 'vscode';
 import path from 'path';
 
+import { CONTEXT_KEYS } from '@/config/variables.js';
 
 /**
  * Class representing a collection of comments.
  */
 export default class Comments {
-  constructor(context) {
-    this.context = context;
-    this.comments = {};
+  constructor() {
+    this.comments = [];
+
+    vscode.window.onDidChangeActiveTextEditor(this.textEditorChanged.bind(this));
   }
 
   /**
-   * Sets the comments.
-   * @param {Array} comments - An array of comments to be set.
+   * Sets the context for the Comments instance.
+   *
+   * @param {Object} context - The context to set.
+   */
+  setContext(context) {
+    this.context = context;
+  }
+
+  /**
+   * Sets the comments for the current file and updates the context keys.
+   * @param {Array} comments - An array of comments to set.
+   * @returns {void}
    */
   setComments(comments) {
-    comments.forEach(comment => {
-      if (this.comments[comment.id]) return;
+    this.comments.forEach(comment => this.removeCommentTooltip(comment));
+    this.comments = [];
 
-      this.comments[comment.id] = {
+    comments.forEach(comment => {
+      this.comments.push({
         comment,
         tooltip: this.setCommentTooltip(comment),
-        // decoration: this.setCommentTooltip(comment)
-      };
-
-      this.setLineDecoration(comment);
+      });
     });
+    
+    this.textEditorChanged(vscode.window.activeTextEditor);
+  }
+
+  /**
+   * Removes the tooltip associated with a comment.
+   *
+   * @param {Comment} comment - The comment object to remove the tooltip from.
+   */
+  removeCommentTooltip(comment) {
+    comment.tooltip.dispose();
   }
 
   /**
@@ -59,33 +80,50 @@ export default class Comments {
     return hoverProvider;
   }
 
-  setLineDecoration(comment) {
-    const editor = vscode.window.activeTextEditor;
+  /**
+   * Sets a line decoration for a comment in the editor.
+   * @param {Comment} comment - The comment to set the decoration for.
+   * @param {vscode.TextEditor} editor - The editor to set the decoration in.
+   * @returns {void}
+   */
+  setLineDecoration(comment, editor) {
     const line = comment.anchor.line - 1;
     const range = new vscode.Range(line, 0, line, 0);
 
     const decorationType = vscode.window.createTextEditorDecorationType({
-      gutterIconPath: new vscode.ThemeIcon('pencil')
+      light: {
+        gutterIconPath: this.context.asAbsolutePath('src/icons/light/comment-unresolved.svg')
+      },
+      dark: {
+        gutterIconPath: this.context.asAbsolutePath('src/icons/dark/comment-unresolved.svg')
+      },
+      gutterIconSize: '50%',
+      overviewRulerColor: new vscode.ThemeColor('minimap.warningHighlight'),
     });
-  
-    editor.setDecorations(decorationType, [{ range }]);
+    
+    editor.setDecorations(decorationType, [{range}]);
   }
 
-  // setCommentDecoration(comment) {
-  //   const editor = vscode.window.activeTextEditor;
-  //   const tooltipDecorationType = vscode.window.createTextEditorDecorationType({
-  //     before: {
-  //       contentText: 'commented',
-  //       margin: '10px'
-  //     }
-  //   });
-    
-  //   const pos = editor.selection.active;
-  //   const activeLine = editor.document.lineAt(pos.line);
-  //   const lineRange = activeLine.range;
-    
-  //   editor.setDecorations(tooltipDecorationType, [{
-  //     range: lineRange
-  //   }]);
-  // }
+  /**
+   * Set line decorations when text editor changes.
+   * @param {TextEditor} editor - The text editor that was changed.
+   */
+  textEditorChanged(editor) {
+    if (!editor) return;
+    const lines = [];
+
+    const file = editor.document.fileName;
+
+    this.comments.forEach(comment => {
+      if (!file.includes(comment.comment.anchor.path)) return;
+
+      lines.push(comment.comment.anchor.line);
+
+      this.setLineDecoration(comment.comment, editor);
+    });
+
+    vscode.commands.executeCommand('setContext', CONTEXT_KEYS.commentLines, lines);
+  }
 }
+
+export const comments = new Comments();

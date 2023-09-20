@@ -1,7 +1,7 @@
 import vscode from 'vscode';
-import path from 'path';
 
-import { COMMAND_KEYS } from '@/config/variables.js';
+import { File } from './TreeItems/File.js';
+import { Comment } from './TreeItems/Comment.js';
 
 export class CommentsProvider {  
   constructor() {
@@ -44,40 +44,9 @@ export class CommentsProvider {
     const items = [];
 
     Object.entries(this.files).forEach(([filePath, comments]) => {
-      items.push(new File(filePath, comments));
+      items.push(new File(filePath, comments, Comment));
     });
 
     return items;
 	}
-}
-
-export class File extends vscode.TreeItem {
-  constructor(filePath, comments) {
-    super(path.basename(filePath), vscode.TreeItemCollapsibleState.Collapsed);
-    this.comments = comments;
-  }
-
-  async getChildren() {
-    const items = [];
-
-    this.comments.forEach(comment => {
-      items.push(new Comment(comment));
-    });
-
-    return items;
-	}
-}
-
-export class Comment extends vscode.TreeItem {
-  constructor(comment) {
-    super(comment.text, vscode.TreeItemCollapsibleState.None);
-
-    this.description = comment.author.displayName;
-
-    this.command = {
-      command: COMMAND_KEYS.goToComment,
-      title: 'Go to task',
-      arguments: [comment]
-    };
-  }
 }

@@ -16,6 +16,7 @@ export const CONTEXT_KEYS = {
   repository: 'bitbucket-pullrequest-tasks.repository',
   ready: 'bitbucket-pullrequest-tasks.ready',
   prLoaded: 'bitbucket-pullrequest-tasks.prLoaded',
+  commentLines: 'bitbucket-pullrequest-tasks.commentLines',
 };
 
 export const COMMAND_KEYS = {
@@ -27,4 +28,12 @@ export const COMMAND_KEYS = {
   setHostURL: 'bitbucket-pullrequest-tasks.setHostURL',
   createPR: 'bitbucket-pullrequest-tasks.createPR',
   reloadComments: 'bitbucket-pullrequest-tasks.reloadComments',
+  showCommentDetails: 'bitbucket-pullrequest-tasks.showCommentDetails',
+  toggleTask: 'bitbucket-pullrequest-tasks.toggleTask',
+};
+
+export const COMMENT_TYPES = {
+  task: 'task',
+  comment: 'comment',
+  generalComment: 'generalComment',
 };

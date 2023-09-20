@@ -1,5 +1,7 @@
 import fetch, { Headers } from 'node-fetch';
 
+import { COMMENT_TYPES } from '@/config/variables.js';
+
 /**
  * Class representing a connection to the BitBucket API.
  */
@@ -86,16 +88,21 @@ export default class BitBucketApiConnector {
         if (activity.comment.severity === 'BLOCKER') {
           tasks.push({
             ...activity.comment,
-            anchor: activity.commentAnchor
+            anchor: activity.commentAnchor,
+            type: COMMENT_TYPES.task
           });
           return;
         }
         comments.push({
           ...activity.comment,
-          anchor: activity.commentAnchor
+          anchor: activity.commentAnchor,
+          type: COMMENT_TYPES.comment
         });
       } else if (activity.comment) {
-        generalComments.push(activity.comment);
+        generalComments.push({
+          ...activity.comment,
+          type: COMMENT_TYPES.generalComment
+        });
       }
     });
 
