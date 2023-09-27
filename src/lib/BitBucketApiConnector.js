@@ -131,4 +131,25 @@ export default class BitBucketApiConnector {
 
     return res.json();
   }
+
+  async changeSuggestionState(pullRequestId, comment, commentVersion) {
+    const url = `${this.baseUrl}/projects/${this.project}/repos/${this.repository}/pull-requests/${pullRequestId}/comments/${comment}`;
+    const body = {
+      version: commentVersion,
+      properties: {
+        suggestionState: 'APPLIED'
+      }
+    };
+
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${this.bearerToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    return res.json();
+  }
 }

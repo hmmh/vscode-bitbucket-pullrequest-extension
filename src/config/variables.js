@@ -30,6 +30,7 @@ export const COMMAND_KEYS = {
   reloadComments: 'bitbucket-pullrequest-tasks.reloadComments',
   showCommentDetails: 'bitbucket-pullrequest-tasks.showCommentDetails',
   toggleTask: 'bitbucket-pullrequest-tasks.toggleTask',
+  applySuggestion: 'bitbucket-pullrequest-tasks.applySuggestion',
 };
 
 export const COMMENT_TYPES = {

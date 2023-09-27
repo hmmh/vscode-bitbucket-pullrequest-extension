@@ -2,7 +2,7 @@
   "name": "bitbucket-pullrequest-tasks",
   "displayName": "Bitbucket PullRequest Tasks",
   "description": "Shows the tasks and comments inside of the editor and opens the files in which they are made.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Thorben Ziegler <thorben.ziegler@hmmh.de>",
   "publisher": "thorbenziegler",
   "repository":{

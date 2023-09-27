@@ -19,9 +19,9 @@ import { comments as commentsInfo } from '@/lib/Comments.js';
 async function initPullRequests(context, tasksView, commentsProvider, generalCommentsView) {
 	commentsInfo.setContext(context);
 	
-	pr.subscribe(({tasks}) => tasksView.provider.updateData(tasks));
+	pr.subscribe(({tasks}) => tasksView.updateData(tasks));
   pr.subscribe(({comments}) => commentsProvider.updateData(comments));
-  pr.subscribe(({generalComments}) => generalCommentsView.provider.updateData(generalComments));
+  pr.subscribe(({generalComments}) => generalCommentsView.updateData(generalComments));
   pr.subscribe(({tasks, comments}) => commentsInfo.setComments([
     ...tasks,
     ...comments

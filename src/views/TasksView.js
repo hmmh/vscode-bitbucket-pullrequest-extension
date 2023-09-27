@@ -14,6 +14,14 @@ export default class TasksView {
     this.tasksView.onDidChangeCheckboxState(this.handleCheckboxClick.bind(this));
   }
 
+  updateData(comments) {
+    this.comments = comments;
+    this.provider.updateData(comments);
+    this.tasksView.badge = { 
+      value: comments.filter((comment) => comment.severity === 'BLOCKER' && comment.state === 'OPEN').length,
+    };
+  }
+
   handleCheckboxClick(e) {
     const {items} = e;
     items.forEach(async (item) => {

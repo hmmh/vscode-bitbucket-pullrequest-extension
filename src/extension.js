@@ -20,6 +20,7 @@ import createPR from '@/commands/createPR.js';
 import goToComment from '@/commands/goToComment.js';
 import showCommentDetails from '@/commands/showCommentDetails.js';
 import toggleTask from '@/commands/toggleTask.js';
+import applySuggestion from '@/commands/applySuggestion.js';
 
 function checkSetup(context) {
 	const isReady = context.workspaceState.get(CONTEXT_KEYS.ready);
@@ -49,6 +50,7 @@ export function activate(context) {
 	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.createPR, () => createPR(context)));
 	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.showCommentDetails, (e) => showCommentDetails(context, e)));
 	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.toggleTask, (task) => toggleTask(task)));
+	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.applySuggestion, applySuggestion));
 	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.reloadComments, async () => {
 		pr.loadComments();
 	}));

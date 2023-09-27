@@ -5,11 +5,13 @@ import { CONTEXT_KEYS } from '@/config/variables.js';
 import { File } from './TreeItems/File.js';
 import { Comment } from './TreeItems/Comment.js';
 
+import { groupCommentsByFiles } from '@/utils/groupCommentsByFiles.js';
+
 export class CommentsProvider {  
   constructor(context) {
     this._onDidChangeTreeData = new vscode.EventEmitter();
     this.onDidChangeTreeData = this._onDidChangeTreeData.event;
-    this.files = {};
+    this.files = new Map();
 
     this.hostURL = context.workspaceState.get(CONTEXT_KEYS.hostURL);
 	}
@@ -20,15 +22,7 @@ export class CommentsProvider {
    */
   updateData(comments) {
     if (comments === undefined) return;
-    this.files = {};
-
-    comments.forEach(comment => {
-      if (!this.files[comment.anchor.path]) {
-        this.files[comment.anchor.path] = [];
-      }
-
-      this.files[comment.anchor.path].push(comment);
-    });
+    this.files = groupCommentsByFiles(comments);
 
     this.refresh();
   }
@@ -47,7 +41,7 @@ export class CommentsProvider {
     }
     const items = [];
 
-    Object.entries(this.files).forEach(([filePath, comments]) => {
+    this.files.forEach((comments, filePath) => {
       items.push(new File(filePath, comments, Comment, this.hostURL));
     });
 

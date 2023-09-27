@@ -5,26 +5,20 @@ import { CONTEXT_KEYS } from '@/config/variables.js';
 import { File } from './TreeItems/File.js';
 import { Task } from './TreeItems/Task.js';
 
+import { groupCommentsByFiles } from '@/utils/groupCommentsByFiles.js';
+
 export class TasksProvider {  
   constructor(context) {
     this._onDidChangeTreeData = new vscode.EventEmitter();
     this.onDidChangeTreeData = this._onDidChangeTreeData.event;
 
     this.hostURL = context.workspaceState.get(CONTEXT_KEYS.hostURL);
-    this.files = {};
+    this.files = new Map();
 	}
 
   updateData(tasks) {
     if (tasks === undefined) return;
-    this.files = {};
-    
-    tasks.forEach(task => {
-      if (!this.files[task.anchor.path]) {
-        this.files[task.anchor.path] = [];
-      }
-
-      this.files[task.anchor.path].push(task);
-    });
+    this.files = groupCommentsByFiles(tasks);
 
     this.refresh();
   }
@@ -44,7 +38,7 @@ export class TasksProvider {
     
     const items = [];
 
-    Object.entries(this.files).forEach(([filePath, tasks]) => {
+    this.files.forEach((tasks, filePath) => {
       items.push(new File(filePath, tasks, Task, this.hostURL));
     });
 

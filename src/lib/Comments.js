@@ -3,7 +3,10 @@ import path from 'path';
 
 import { CONTEXT_KEYS } from '@/config/variables.js';
 
-import { getCommentMarkdown } from '@/utils/markdown.js';
+import { getTooltipMarkdown } from '@/utils/markdown.js';
+import { groupCommentsByFiles } from '@/utils/groupCommentsByFiles.js';
+
+import CodeLensProvider from './CodeLensProvider.js';
 
 /**
  * Class representing a collection of comments.
@@ -11,6 +14,7 @@ import { getCommentMarkdown } from '@/utils/markdown.js';
 export default class Comments {
   constructor() {
     this.comments = [];
+    this.codeLenseProviders = new Set();
 
     vscode.window.onDidChangeActiveTextEditor(this.textEditorChanged.bind(this));
   }
@@ -30,17 +34,31 @@ export default class Comments {
    * @returns {void}
    */
   setComments(comments) {
-    this.comments.forEach(comment => this.removeCommentTooltip(comment));
-    this.comments = [];
+    this.cleanup();
 
-    comments.forEach(comment => {
+    comments.forEach((comment) => {
       this.comments.push({
         comment,
         tooltip: this.setCommentTooltip(comment),
       });
     });
+
+    this.setCodeLens(comments);
     
     this.textEditorChanged(vscode.window.activeTextEditor);
+  }
+
+  cleanup() {
+    this.comments.forEach(comment => {
+      this.removeCommentTooltip(comment);
+    });
+
+    this.codeLenseProviders.forEach(provider => {
+      provider.dispose();
+    });
+
+    this.codeLenseProviders.clear();
+    this.comments = [];
   }
 
   /**
@@ -69,7 +87,7 @@ export default class Comments {
       provideHover(document, position) {  
         if (position.line !== comment.anchor.line - 1) return;
 
-        return new vscode.Hover(getCommentMarkdown(comment, hostURL));
+        return new vscode.Hover(getTooltipMarkdown(comment, hostURL));
       }
     });
     
@@ -121,6 +139,25 @@ export default class Comments {
     });
 
     vscode.commands.executeCommand('setContext', CONTEXT_KEYS.commentLines, lines);
+  }
+
+  /** 
+   * Add codelens for comments.
+   */
+  setCodeLens(comments) {
+    const files = groupCommentsByFiles(comments);
+
+    const workspace = vscode.workspace.workspaceFolders[0].uri.path;
+    
+    this.codeLenseProviders = new Set();
+    files.forEach((comments, file) => {
+      const uri = vscode.Uri.parse(file);
+      const filePath = path.join(workspace, uri.path);
+
+      const lens = new CodeLensProvider();
+      lens.setComments(comments);
+      this.codeLenseProviders.add(vscode.languages.registerCodeLensProvider({ pattern: filePath }, lens));
+    });
   }
 }
 

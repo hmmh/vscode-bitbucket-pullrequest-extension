@@ -169,6 +169,19 @@ class PullRequest {
 
     return updatedTask;
   }
+
+  async applySuggestion(comment) {
+    const updatedTask = {
+      ...comment,
+      ...await this.connector.changeSuggestionState(this.pullRequest.id, comment.id, comment.version)
+    };
+
+    const index = this[updatedTask.type + 's'].findIndex((item) => item.id === updatedTask.id);
+    this[updatedTask.type + 's'][index] = updatedTask;
+    this.notifySubscribers();
+
+    return updatedTask;
+  }
 }
 
 export const pr = new PullRequest();

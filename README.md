@@ -12,7 +12,7 @@ When it's your first time, you need to configure it.
 
 ![Startup screen](docs/assets/startup-screen.png)
 
-When you click on "Authenticate" you need to add your BitBucket Access Token (https://bitbucket.hmmh.de/plugins/servlet/access-tokens/users/YOUR.USER/manage).
+When you click on "Authenticate" you need to add your BitBucket Access Token (https://bitbucket.hmmh.de/plugins/servlet/access-tokens/users/YOUR.USER/manage). Please remember to insert your user to this url. You could also go to your porfile settings and navigate the access token section.
 After that you can set up your project, by specifying the host url of your BitBucket server, the BitBucket project and the Repository name. Normally those values should be prefilled.
 
 ### Sections
