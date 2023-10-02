@@ -20,6 +20,7 @@ export default async function setHostURL(context) {
   });
 
   await context.workspaceState.update(CONTEXT_KEYS.hostURL, hostURL);
+  vscode.commands.executeCommand('setContext', CONTEXT_KEYS.hostURL, hostURL);
 
   vscode.window.showInformationMessage('Bitbucket server url saved!');
 }

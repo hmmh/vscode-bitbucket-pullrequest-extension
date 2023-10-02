@@ -17,6 +17,7 @@ import setupProject from '@/commands/setupProject.js';
 import resetProject from '@/commands/resetProject.js';
 import setHostURL from '@/commands/setHostURL.js';
 import createPR from '@/commands/createPR.js';
+import openAccount from '@/commands/openAccount.js';
 import goToComment from '@/commands/goToComment.js';
 import showCommentDetails from '@/commands/showCommentDetails.js';
 import toggleTask from '@/commands/toggleTask.js';
@@ -24,8 +25,10 @@ import applySuggestion from '@/commands/applySuggestion.js';
 
 function checkSetup(context) {
 	const isReady = context.workspaceState.get(CONTEXT_KEYS.ready);
+	const isProjectSetup = context.workspaceState.get(CONTEXT_KEYS.isProjectSetup);
 
 	vscode.commands.executeCommand('setContext', CONTEXT_KEYS.ready, isReady);
+	vscode.commands.executeCommand('setContext', CONTEXT_KEYS.isProjectSetup, isProjectSetup);
 
 	return isReady;
 }
@@ -48,6 +51,7 @@ export function activate(context) {
 	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.resetProject, () => resetProject(context)));
 	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.setHostURL, () => setHostURL(context)));
 	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.createPR, () => createPR(context)));
+	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.openAccount, () => openAccount(context)));
 	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.showCommentDetails, (e) => showCommentDetails(context, e)));
 	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.toggleTask, (task) => toggleTask(task)));
 	context.subscriptions.push(vscode.commands.registerCommand(COMMAND_KEYS.applySuggestion, applySuggestion));

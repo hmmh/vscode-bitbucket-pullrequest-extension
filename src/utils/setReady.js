@@ -10,6 +10,12 @@ export default async function setReady(context) {
   const token = await context.secrets.get(SECRET_KEYS.token);
   const project = context.workspaceState.get(CONTEXT_KEYS.project);
   const repo = context.workspaceState.get(CONTEXT_KEYS.repository);
+  const hostURL = context.workspaceState.get(CONTEXT_KEYS.hostURL);
+
+  if (hostURL && project && repo) {
+    context.workspaceState.update(CONTEXT_KEYS.isProjectSetup, true);
+  	vscode.commands.executeCommand('setContext', CONTEXT_KEYS.isProjectSetup, true);
+  }
 
   if (((username && password) || token) && (project && repo)) {
     context.workspaceState.update(CONTEXT_KEYS.ready, true);

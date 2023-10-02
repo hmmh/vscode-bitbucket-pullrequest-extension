@@ -2,7 +2,7 @@
   "name": "bitbucket-pullrequest-tasks",
   "displayName": "Bitbucket PullRequest Tasks",
   "description": "Shows the tasks and comments inside of the editor and opens the files in which they are made.",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": "Thorben Ziegler <thorben.ziegler@hmmh.de>",
   "publisher": "hmmh",
   "repository":{
@@ -79,8 +79,13 @@
     "viewsWelcome": [
       {
         "view": "bitbucket-pullrequest-tasks-list",
-        "contents": "To see the comments of your Pull Request, please authenticate and set up your BitBucket Project first. \n[Authenticate](command:bitbucket-pullrequest-tasks.authWithToken)\n[Setup Project](command:bitbucket-pullrequest-tasks.setupProject)",
-        "when": "!bitbucket-pullrequest-tasks.ready"
+        "contents": "To see the comments of your Pull Request, please set up your BitBucket Project first. \n[Setup Project](command:bitbucket-pullrequest-tasks.setupProject)",
+        "when": "!bitbucket-pullrequest-tasks.isProjectSetup && !bitbucket-pullrequest-tasks.ready"
+      },
+      {
+        "view": "bitbucket-pullrequest-tasks-list",
+        "contents": "Please authenticate by entering your authentication token. You can generate your authentication token in your [user account](command:bitbucket-pullrequest-tasks.openAccount). \n[Authenticate](command:bitbucket-pullrequest-tasks.authWithToken)",
+        "when": "bitbucket-pullrequest-tasks.isProjectSetup && !bitbucket-pullrequest-tasks.ready"
       },
       {
         "view": "bitbucket-pullrequest-tasks-list",
