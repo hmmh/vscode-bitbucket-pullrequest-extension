@@ -6,11 +6,11 @@ A VS Code extension that displays tasks and comments of the corresponding Pull R
 
 Once you've added this extension, get a new icon in the left toolbar.
 
-![Toolbar](https://bitbucket.hmmh.de/projects/U3UIWS/repos/vscode-bitbucket-extension/raw/docs/assets/toolbar-icon.png)
+![Toolbar](https://raw.githubusercontent.com/hmmh/vscode-bitbucket-pullrequest-extension/main/docs/assets/toolbar-icon.png)
 
 When it's your first time, you need to configure it.
 
-![Startup screen](https://bitbucket.hmmh.de/projects/U3UIWS/repos/vscode-bitbucket-extension/raw/docs/assets/startup-screen.png)
+![Startup screen](https://raw.githubusercontent.com/hmmh/vscode-bitbucket-pullrequest-extension/main/docs/assets/startup-screen.png)
 
 When you click on "Authenticate" you need to add your BitBucket Access Token (https://bitbucket.hmmh.de/plugins/servlet/access-tokens/users/YOUR.USER/manage). Please remember to insert your user to this url. You could also go to your porfile settings and navigate the access token section.
 After that you can set up your project, by specifying the host url of your BitBucket server, the BitBucket project and the Repository name. Normally those values should be prefilled.
