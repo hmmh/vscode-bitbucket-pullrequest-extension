@@ -84,7 +84,7 @@
       },
       {
         "view": "bitbucket-pullrequest-tasks-list",
-        "contents": "Please authenticate by entering your access token. You can generate your access token in your [user account](command:bitbucket-pullrequest-tasks.openAccount). \n[Authenticate](command:bitbucket-pullrequest-tasks.authWithToken)",
+        "contents": "Please authenticate by entering your access token. You can generate a new token in your [user account](command:bitbucket-pullrequest-tasks.openAccount). \n[Authenticate](command:bitbucket-pullrequest-tasks.authWithToken)",
         "when": "bitbucket-pullrequest-tasks.isProjectSetup && !bitbucket-pullrequest-tasks.ready"
       },
       {
