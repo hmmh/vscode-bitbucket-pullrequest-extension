@@ -140,7 +140,8 @@
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "node ./test/runTest.js",
-    "vscode:bundle": "npm run vscode:prepublish && vsce package --skip-license"
+    "vscode:bundle": "npm run vscode:prepublish && vsce package --skip-license",
+    "release": "./scripts/release.sh"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
