@@ -2,12 +2,12 @@
   "name": "bitbucket-pullrequest-tasks",
   "displayName": "Bitbucket PullRequest Tasks",
   "description": "Shows the tasks and comments inside of the editor and opens the files in which they are made.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "Thorben Ziegler <thorben.ziegler@hmmh.de>",
   "publisher": "hmmh",
   "repository":{
     "type": "git",
-    "url": "https://bitbucket.hmmh.de/scm/u3uiws/vscode-bitbucket-extension.git"
+    "url": "https://github.com/hmmh/vscode-bitbucket-pullrequest-extension.git"
   },
   "engines": {
     "vscode": "^1.80.0"
@@ -140,7 +140,7 @@
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "node ./test/runTest.js",
-    "vscode:bundle": "npm run vscode:prepublish && vsce package"
+    "vscode:bundle": "npm run vscode:prepublish && vsce package --skip-license"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
