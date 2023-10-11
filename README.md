@@ -37,9 +37,17 @@ The third section is build for the comments that aren't made on a specific file 
 ### Files
 If you opened a file, that has comments or tasks, you will see an icon in front of the line number of each line, that has comments. Sadly it is currently not possible to intercept any interaction with this icon, so it's only purpose is to be a visual indicator.
 
+![Indicator](https://raw.githubusercontent.com/hmmh/vscode-bitbucket-pullrequest-extension/main/docs/assets/indicator.png)
+
+#### Suggestions
+If a comment is a suggestion, you will get a button above that line, that allows you to accept the suggestion.
+
+![Accept Suggestion](https://raw.githubusercontent.com/hmmh/vscode-bitbucket-pullrequest-extension/main/docs/assets/accept-suggestion.png)
+
 ### Tooltips
 
 If you hover over a task, comment, or a line on which something is commented, you will get a tooltip with more information about it.
+
 ![Tooltip](https://raw.githubusercontent.com/hmmh/vscode-bitbucket-pullrequest-extension/main/docs/assets/tooltip.png)
 
 ## Authentication
