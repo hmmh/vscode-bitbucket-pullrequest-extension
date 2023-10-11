@@ -9,7 +9,7 @@ version=$(node -p -e "require('./package.json').version")
 read -p "Release Notes: " release_notes
 
 # create tag with version
-git tag -a $version -m "Release $version\n\n$release_notes"
+git tag -a $version -m "Release $version - $release_notes"
 
 # push tag to github
 git push origin $version
